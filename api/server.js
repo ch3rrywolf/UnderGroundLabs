@@ -4,10 +4,14 @@ const express = require('express');
 const app = express();
 const port = process.env.SERVER_PORT | 3000;
 
-const userRoute = require('./routes/userRoute');
+app.set('view engine', 'ejs');
+app.set('views', './views');
 
+const userRoute = require('./routes/userRoute');
 app.use('/api', userRoute);
 
+const authRoute = require('./routes/authRoute');
+app.use('/', authRoute);
 
 
 const connectMongoDB = async () => {

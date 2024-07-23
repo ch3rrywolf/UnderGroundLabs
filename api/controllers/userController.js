@@ -61,6 +61,41 @@ const userRegistre = async(req, res) => {
 
 }
 
+const mailVerification = async(req, res) => {
+    try{
+
+        if(req.query.id == undefined){
+            return res.render('404');
+        }
+
+        const userData = await User.findOne({ _id: req.query.id });
+
+        if(userData){
+
+            if(userData.is_verified == 1){
+                return res.render('mail-verification', { message:'Your mail already verified!' });
+            }
+
+            await User.findByIdAndUpdate({ _id: req.query.id },{
+
+                $set:{
+                    is_verified: 1
+                }
+            });
+
+            return res.render('mail-verification', { message:'Mail has been verified Successfully!' })
+
+        } else{
+            return res.render('mail-verification', { message:'User not Found!' });
+        }
+
+    } catch(error){
+        console.log(error.message);
+        return res.render('404');
+    }
+}
+
 module.exports = {
-    userRegistre
+    userRegistre,
+    mailVerification
 }
