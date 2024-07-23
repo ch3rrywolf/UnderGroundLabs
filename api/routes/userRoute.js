@@ -31,7 +31,9 @@ const upload = multer({
      fileFilter:fileFilter
 });
 
+
 const userController = require('../controllers/userController');
-router.post('/register', upload.single('image'), userController.userRegistre);
+const { registerValidation } = require('../helpers/validation');
+router.post('/register', upload.single('image'), registerValidation, userController.userRegistre);
 
 module.exports = router;
