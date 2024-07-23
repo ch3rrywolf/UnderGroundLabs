@@ -5,6 +5,9 @@ const { validationResult } = require('express-validator');
 
 const mailer = require('../helpers/mailer');
 
+const randomstring = require('randomstring');
+const PasswordReset = require('../models/passwordReset');
+
 const userRegistre = async(req, res) => {
 
     try{
@@ -166,6 +169,22 @@ const forgotPassword = async(req, res) => {
                 msg: "Email doesn't exists!"
             });
         }
+
+        const randomString = randomstring.generate();
+        const msg = '<p>Hii '+userData.name+', Please click <a href="http://127.0.0.1:3000/reset-password?token='+randomString+'">here<a/> to Reset your Password.</p>';
+        await PasswordReset.deleteMany({ user_id: userData._id });
+        const passwordReset = new PasswordReset({
+            user_id: userData._id,
+            token:randomString
+        });
+        await passwordReset.save();
+
+        mailer.sendMail(userData.email, 'Reset Password', msg);
+
+        return res.status(201).json({
+            success: true,
+            msg: 'Reset Password Link send to your mail, please check!'
+        });
         
     } catch(error){
         return res.status(400).json({
