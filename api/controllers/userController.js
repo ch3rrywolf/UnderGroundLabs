@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 
 const { validationResult } = require('express-validator');
 
+const mailer = require('../helpers/mailer');
+
 const userRegistre = async(req, res) => {
 
     try{
@@ -39,6 +41,10 @@ const userRegistre = async(req, res) => {
         });
 
         const userData = await user.save();
+
+        const msg = '<p> Hii '+name+', Please <a href="http:/127.0.0.1:3000/mail-verification?id='+userData._id+'">Verify</a> your mail.</p>';
+
+        mailer.sendMail(email, 'Mail Verification Account UnderGroundLabs', msg);
 
         return res.status(200).json({
             success: true,
