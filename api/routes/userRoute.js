@@ -37,5 +37,6 @@ const { registerValidation, sendMailVerificationValidator } = require('../helper
 
 router.post('/register', upload.single('image'), registerValidation, userController.userRegistre);
 router.post('/send-mail-verification', sendMailVerificationValidator, userController.sendMailVerification);
+router.post('/forgot-password', passwordResetValidator, userController.forgotPassword)
 
 module.exports = router;

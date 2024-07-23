@@ -143,8 +143,41 @@ const sendMailVerification = async(req, res) => {
     }
 }
 
+const forgotPassword = async(req, res) => {
+    try{
+
+        const errors = validationResult(req);
+
+        if(!errors.isEmpty()){
+            return res.status(400).json({
+                success: false,
+                msg: 'Errors',
+                errors: errors.array()
+            });
+        }
+
+        const { email } = req.body;
+
+        const userData = await User.findOne({ email });
+
+        if(!userData){
+            return res.status(400).json({
+                success: false,
+                msg: "Email doesn't exists!"
+            });
+        }
+        
+    } catch(error){
+        return res.status(400).json({
+            success: false,
+            msg: error.message
+        });
+    }
+}
+
 module.exports = {
     userRegistre,
     mailVerification,
-    sendMailVerification
+    sendMailVerification,
+    forgotPassword
 }
