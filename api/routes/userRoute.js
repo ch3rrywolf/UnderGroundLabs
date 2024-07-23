@@ -18,4 +18,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage:storage });
 
+const userController = require('../controllers/userController');
+router.post('/register', upload.single('image'), userController.userRegistre);
+
 module.exports = router;
