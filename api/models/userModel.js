@@ -19,8 +19,8 @@ const userSchema = new mongoose.Schema({
         requird:true
     },
     is_verified:{
-        type:String,
-        requird:true
+        type:Number,
+        default:0 // 1 verified
     },
     image:{
         type:String,
