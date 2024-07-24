@@ -213,10 +213,39 @@ const resetPassword = async(req, res) => {
     }
 }
 
+const updatePassword = async(req, res) => {
+    try{
+
+        const { user_id, password, c_password } = req.body;
+
+        const resetData = await PasswordReset.findOne({ });
+
+        if(password != c_password){
+            return res.render('reset-password', { resetData, error: 'Confirm Password not matching!' });
+        }
+
+        const hashedPassword = await bcrypt.hash(c_password, 10);
+
+        await User.findByIdAndUpdate({ _id: user_id }, {
+            $set:{
+                password: hashedPassword
+            }
+        });
+
+        await PasswordReset.deleteMany({ user_id });
+
+        return res.redirect('/reset-success');
+
+    } catch(error){
+        return res.render('404');
+    }
+}
+
 module.exports = {
     userRegistre,
     mailVerification,
     sendMailVerification,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    updatePassword
 }
