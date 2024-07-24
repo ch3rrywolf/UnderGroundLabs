@@ -8,6 +8,8 @@ const mailer = require('../helpers/mailer');
 const randomstring = require('randomstring');
 const PasswordReset = require('../models/passwordReset');
 
+const jwt = require('jsonwebtoken');
+
 const userRegistre = async(req, res) => {
 
     try{
@@ -249,6 +251,69 @@ const resetSuccess = async(req, res) => {
     }
 }
 
+const generateAccessToken = async(user) => {
+    const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn:"2h" });
+    return token;
+}
+
+const loginUser = async(req, res) => {
+    try{
+
+        const errors = validationResult(req);
+
+        if(!errors.isEmpty()){
+            return res.status(400).json({
+                success:false,
+                msg:'Errors',
+                errors: errors.array()
+            });
+        }
+
+        const { email, password } = req.body;
+
+        const userData = await User.findOne({ email });
+
+        if(!userData){
+            return res.status(401).json({
+                success: false,
+                msg: 'Email and Password is Incorrect!'
+            });
+        }
+
+        const passwordMatch = await bcrypt.compare(password, userData.password);
+
+        if(!passwordMatch){
+            return res.status(401).json({
+                success: false,
+                msg: 'Password is Incorrect!'
+            });
+        }
+
+        if(!userData.is_verified != 0){
+            return res.status(401).json({
+                success: false,
+                msg: 'Please Verify your Account!'
+            });
+        }
+
+        const accessToken = await generateAccessToken({ user:userData });
+
+        return res.status(200).json({
+            success: true,
+            msg: 'Login Successfully!',
+            user: userData,
+            accessToken: accessToken,
+            tokenType: 'Bearer'
+        });
+
+    } catch(error){
+        return res.status(400).json({
+            success: false,
+            msg: error.message
+        });
+    }
+}
+
 module.exports = {
     userRegistre,
     mailVerification,
@@ -256,5 +321,6 @@ module.exports = {
     forgotPassword,
     resetPassword,
     updatePassword,
-    resetSuccess
+    resetSuccess,
+    loginUser
 }
