@@ -12,7 +12,7 @@ const userController = require('../controllers/userController');
 router.get('/mail-verification', userController.mailVerification);
 
 router.get('/reset-password', userController.resetPassword);
-router.post('/update-password', userController.updatePassword); // Ensure the action is /update-password
+router.post('/update-password', userController.updatePassword);
 router.get('/reset-success', userController.resetSuccess);
 
 module.exports = router;
