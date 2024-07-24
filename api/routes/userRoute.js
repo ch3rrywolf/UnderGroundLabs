@@ -32,7 +32,7 @@ const upload = multer({
 });
 
 const userController = require('../controllers/userController');
-const { registerValidation, sendMailVerificationValidator, passwordResetValidator, loginValidator, updateProfileValidator, otpMailValidator } = require('../helpers/validation');
+const { registerValidation, sendMailVerificationValidator, passwordResetValidator, loginValidator, updateProfileValidator, otpMailValidator, verifyOtpValidator } = require('../helpers/validation');
 
 const auth = require('../middleware/auth');
 
@@ -49,5 +49,6 @@ router.get('/logout', auth, userController.logout);
 
 //otp verification routes
 router.post('/send-otp', otpMailValidator, userController.sendOtp);
+router.post('/verify-otp', verifyOtpValidator, userController.verifyOtp);
 
 module.exports = router;

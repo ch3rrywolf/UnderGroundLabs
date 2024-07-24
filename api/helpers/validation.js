@@ -58,3 +58,8 @@ exports.otpMailValidator = [
         gmail_remove_dots:true
     }),
 ];
+
+exports.verifyOtpValidator = [
+    check('user_id', 'User Id is required').not().isEmpty(),
+    check('otp', 'OTP is required').not().isEmpty(),
+];
