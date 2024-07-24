@@ -1,8 +1,12 @@
 import React from 'react';
+import './Login.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
     return (
         <div className="container">
+            <h1>Login</h1>
             <form >
                 <div className="foem-group">
                     <label htmlFor="exampleInputEmail1">Email</label>
@@ -20,8 +24,11 @@ const Login = () => {
                         placeholder="Password"
                     />
                 </div>
-                    <button type="submit" className="btn btn-primary">Confirm identity</button>
+                    <button type="submit" className="btn btn-primary mt-2">Confirm identity</button>
             </form>
+            <p>
+                Don't have an account? <Link to="/register">Register</Link>
+            </p>
         </div>
     );
 };
