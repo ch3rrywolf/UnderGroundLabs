@@ -41,9 +41,13 @@ router.post('/send-mail-verification', sendMailVerificationValidator, userContro
 router.post('/forgot-password', passwordResetValidator, userController.forgotPassword);
 router.post('/login', loginValidator, userController.loginUser);
 
+// authenticated routes
 router.get('/profile', auth, userController.userProfile);
 router.post('/update-profile', auth, upload.single('image'), updateProfileValidator, userController.updateProfile);
 router.get('/refresh-token', auth, userController.refreshToken);
 router.get('/logout', auth, userController.logout);
+
+//otp verification routes
+router.post('/send-otp', sendMailVerificationValidator, userController.loginUser);
 
 module.exports = router;
