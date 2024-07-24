@@ -252,6 +252,11 @@ const resetSuccess = async(req, res) => {
 }
 
 const generateAccessToken = async(user) => {
+    const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn:"60s" });
+    return token;
+}
+
+const generateRefreshToken = async(user) => {
     const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn:"2h" });
     return token;
 }
@@ -297,12 +302,14 @@ const loginUser = async(req, res) => {
         }
 
         const accessToken = await generateAccessToken({ user:userData });
+        const refreshToken = await generateRefreshToken({ user:userData });
 
         return res.status(200).json({
             success: true,
             msg: 'Login Successfully!',
             user: userData,
             accessToken: accessToken,
+            refreshToken: refreshToken,
             tokenType: 'Bearer'
         });
 
