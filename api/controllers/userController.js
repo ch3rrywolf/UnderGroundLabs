@@ -148,7 +148,6 @@ const sendMailVerification = async(req, res) => {
 
 const forgotPassword = async(req, res) => {
     try{
-
         const errors = validationResult(req);
 
         if(!errors.isEmpty()){
@@ -171,7 +170,7 @@ const forgotPassword = async(req, res) => {
         }
 
         const randomString = randomstring.generate();
-        const msg = '<p>Hii '+userData.name+', Please click <a href="http://127.0.0.1:3000/reset-password?token='+randomString+'">here<a/> to Reset your Password.</p>';
+        const msg = '<p>Hi '+userData.name+', Please click <a href="http://127.0.0.1:3000/reset-password?token='+randomString+'">here</a> to Reset your Password.</p>';
         await PasswordReset.deleteMany({ user_id: userData._id });
         const passwordReset = new PasswordReset({
             user_id: userData._id,
@@ -183,7 +182,7 @@ const forgotPassword = async(req, res) => {
 
         return res.status(201).json({
             success: true,
-            msg: 'Reset Password Link send to your mail, please check!'
+            msg: 'Reset Password Link sent to your mail, please check!'
         });
         
     } catch(error){
@@ -196,8 +195,7 @@ const forgotPassword = async(req, res) => {
 
 const resetPassword = async(req, res) => {
     try{
-
-        if(req.query.token == undefined){
+        if(!req.query.token){
             return res.render('404');
         }
 
@@ -215,27 +213,37 @@ const resetPassword = async(req, res) => {
 
 const updatePassword = async(req, res) => {
     try{
-
         const { user_id, password, c_password } = req.body;
 
-        const resetData = await PasswordReset.findOne({ });
+        const resetData = await PasswordReset.findOne({ user_id });
 
-        if(password != c_password){
+        if(!resetData){
+            return res.render('404');
+        }
+
+        if(password !== c_password){
             return res.render('reset-password', { resetData, error: 'Confirm Password not matching!' });
         }
 
-        const hashedPassword = await bcrypt.hash(c_password, 10);
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        await User.findByIdAndUpdate({ _id: user_id }, {
-            $set:{
-                password: hashedPassword
-            }
+        await User.findByIdAndUpdate(user_id, {
+            $set: { password: hashedPassword }
         });
 
         await PasswordReset.deleteMany({ user_id });
 
         return res.redirect('/reset-success');
 
+    } catch(error){
+        const resetData = await PasswordReset.findOne({ user_id });
+        return res.render('reset-password', { resetData, error: 'An error occurred, please try again.' });
+    }
+}
+
+const resetSuccess = async(req, res) => {
+    try{
+        return res.render('reset-success');
     } catch(error){
         return res.render('404');
     }
@@ -247,5 +255,6 @@ module.exports = {
     sendMailVerification,
     forgotPassword,
     resetPassword,
-    updatePassword
+    updatePassword,
+    resetSuccess
 }

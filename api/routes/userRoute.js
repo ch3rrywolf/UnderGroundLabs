@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express();
+const router = express.Router();
 
 router.use(express.json());
 
@@ -27,10 +27,9 @@ const fileFilter = (req, file, cb) => {
 }
 
 const upload = multer({
-     storage:storage,
-     fileFilter:fileFilter
+     storage: storage,
+     fileFilter: fileFilter
 });
-
 
 const userController = require('../controllers/userController');
 const { registerValidation, sendMailVerificationValidator, passwordResetValidator } = require('../helpers/validation');
