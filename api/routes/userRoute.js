@@ -34,9 +34,13 @@ const upload = multer({
 const userController = require('../controllers/userController');
 const { registerValidation, sendMailVerificationValidator, passwordResetValidator, loginValidator } = require('../helpers/validation');
 
+const auth = require('../middleware/auth');
+
 router.post('/register', upload.single('image'), registerValidation, userController.userRegistre);
 router.post('/send-mail-verification', sendMailVerificationValidator, userController.sendMailVerification);
 router.post('/forgot-password', passwordResetValidator, userController.forgotPassword);
 router.post('/login', loginValidator, userController.loginUser);
+
+router.get('/profile', auth, userController.userProfile);
 
 module.exports = router;

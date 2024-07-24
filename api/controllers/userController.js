@@ -314,6 +314,25 @@ const loginUser = async(req, res) => {
     }
 }
 
+const userProfile = async(req, res) => {
+    try{
+
+        const userData = req.user.user;
+
+        return res.status(200).json({
+            success: true,
+            msg: 'User Profile Data!',
+            data: userData
+        });
+
+    } catch(error){
+        return res.status(400).json({
+            success: false,
+            msg: error.message
+        });
+    }
+}
+
 module.exports = {
     userRegistre,
     mailVerification,
@@ -322,5 +341,6 @@ module.exports = {
     resetPassword,
     updatePassword,
     resetSuccess,
-    loginUser
+    loginUser,
+    userProfile
 }
