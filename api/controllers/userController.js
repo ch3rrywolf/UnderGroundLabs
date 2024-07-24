@@ -197,7 +197,7 @@ const forgotPassword = async(req, res) => {
 const resetPassword = async(req, res) => {
     try{
 
-        if(req.query.token != undefined){
+        if(req.query.token == undefined){
             return res.render('404');
         }
 

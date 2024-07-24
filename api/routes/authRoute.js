@@ -11,5 +11,6 @@ const userController = require('../controllers/userController');
 
 router.get('/mail-verification', userController.mailVerification);
 router.get('/reset-password', userController.resetPassword);
+router.post('/reset-password', userController.updatePassword);
 
 module.exports = router;
