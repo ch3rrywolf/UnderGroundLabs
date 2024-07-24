@@ -43,5 +43,6 @@ router.post('/login', loginValidator, userController.loginUser);
 
 router.get('/profile', auth, userController.userProfile);
 router.post('/update-profile', auth, upload.single('image'), updateProfileValidator, userController.updateProfile);
+router.get('/refresh-token', auth, userController.refreshToken);
 
 module.exports = router;

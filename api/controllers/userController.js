@@ -390,7 +390,30 @@ const updateProfile = async(req, res) => {
     }
 }
 
+const refreshToken = async(req, res) => {
+    try{
 
+        const userId = req.user.user._id;
+
+        const userData = await User.findOne({ _id:userId });
+
+        const accessToken = await generateAccessToken({ user:userData });
+        const refreshToken = await generateRefreshToken({ user:userData });
+
+        return res.status(200).json({
+            success: true,
+            msg: 'Token Refreshed!',
+            accessToken:accessToken,
+            refreshToken:refreshToken
+        });
+
+    } catch(error){
+        return res.status(400).json({
+            success: false,
+            msg: error.message
+        });
+    }
+}
 
 module.exports = {
     userRegistre,
@@ -402,5 +425,6 @@ module.exports = {
     resetSuccess,
     loginUser,
     userProfile,
-    updateProfile
+    updateProfile,
+    refreshToken
 }
