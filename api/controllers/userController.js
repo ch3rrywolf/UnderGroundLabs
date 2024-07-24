@@ -333,6 +333,48 @@ const userProfile = async(req, res) => {
     }
 }
 
+const updateProfile = async(req, res) => {
+    try{
+
+        const errors = validationResult(req);
+
+        if(!errors.isEmpty()){
+            return res.status(400).json({
+                success:false,
+                msg:'Errors',
+                errors: errors.array()
+            });
+        }
+
+        const { name, mobile } = req.body;
+
+        const data = {
+            name,
+            mobile
+        }
+
+        if(req.file !== undefined){
+            data.image = 'image/'+req.file.filename;
+        }
+
+        const userData = await User.findByIdAndUpdate({ _id: req.user.user._id }, {
+            $set: data
+        },{ new: true });
+
+        return res.status(200).json({
+            success: true,
+            msg: 'User Updated Successfully!',
+            user: userData
+        });
+
+    } catch(error){
+        return res.status(400).json({
+            success: false,
+            msg: error.message
+        });
+    }
+}
+
 module.exports = {
     userRegistre,
     mailVerification,
@@ -342,5 +384,6 @@ module.exports = {
     updatePassword,
     resetSuccess,
     loginUser,
-    userProfile
+    userProfile,
+    updateProfile
 }
