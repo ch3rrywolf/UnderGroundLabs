@@ -10,7 +10,7 @@ const jwt = require('jsonwebtoken');
 
 const path = require('path');
 const { deleteFile } = require('../helpers/deleteFile');
-const { oneMinuteExpiry } = require('../helpers/otpValidate');
+const { oneMinuteExpiry, threeMinuteExpiry } = require('../helpers/otpValidate');
 
 
 const userRegistre = async(req, res) => {
@@ -524,6 +524,61 @@ const sendOtp = async(req, res) => {
     }
 }
 
+const verifyOtp = async(req, res) => {
+    try{
+
+        const errors = validationResult(req);
+
+        if(!errors.isEmpty()){
+            return res.status(400).json({
+                success: false,
+                msg: 'Errors',
+                errors: errors.array()
+            });
+        }
+
+        const { user_id, otp } = req.body;
+
+        const otpData = await Otp.findOne({
+            user_id,
+            otp
+        });
+
+        if(!otpData){
+            return res.status(400).json({
+                success: false,
+                msg: 'You entered wrong OTP!'
+            });
+        }
+
+        const isOtpExpired = await threeMinuteExpiry(otpData.timestamp);
+
+        if(isOtpExpired){
+            return res.status(400).json({
+                success: false,
+                msg: 'You OTP has been Expired!'
+            });
+        }
+
+        await User.findByIdAndUpdate({ _id: user_id }, {
+            $set:{
+                is_verified:1
+            }
+        });
+
+        return res.status(200).json({
+            success: true,
+            msg: 'Account Verified Successfully!'
+        });
+
+    } catch(error){
+        return res.status(400).json({
+            success: false,
+            msg: error.message
+        });
+    }
+}
+
 module.exports = {
     userRegistre,
     mailVerification,
@@ -537,5 +592,6 @@ module.exports = {
     updateProfile,
     refreshToken,
     logout,
-    sendOtp
+    sendOtp,
+    verifyOtp
 }
