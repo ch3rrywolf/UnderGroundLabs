@@ -10,6 +10,7 @@ const jwt = require('jsonwebtoken');
 
 const path = require('path');
 const { deleteFile } = require('../helpers/deleteFile');
+const { oneMinuteExpiry } = require('../helpers/otpValidate');
 
 
 const userRegistre = async(req, res) => {
@@ -482,12 +483,28 @@ const sendOtp = async(req, res) => {
 
         const g_otp = await generateRandom4Digit();
 
-        const enter_otp = new Otp({
-            user_id: userData._id,
-            otp: g_otp
-        });
+        const oldOtpData = await Otp.findOne({ user_id: userData._id });
 
-        await enter_otp.save();
+        if(oldOtpData){
+
+            const sendNextOtp = await oneMinuteExpiry(oldOtpData.timestamp);
+            if(!sendNextOtp){
+                return res.status(400).json({
+                    success: false,
+                    msg: 'Pls try after some time!'
+                });
+            }
+
+        }
+
+        const cDate = new Date();
+
+        await Otp.findByIdAndUpdate(
+            { user_id: userData._id },
+            { otp: g_otp, timestamp: new Date(cDate.getTime()) },
+            { upsert:true, new: true, setDefaultsOnInsert: true }
+        );
+
 
         const msg = '<p> Hii <b>'+userData.name+'</b>, </br> <h4>'+g_otp+'</h4></p>';
 
