@@ -194,9 +194,29 @@ const forgotPassword = async(req, res) => {
     }
 }
 
+const resetPassword = async(req, res) => {
+    try{
+
+        if(req.query.token != undefined){
+            return res.render('404');
+        }
+
+        const resetData = await PasswordReset.findOne({ token: req.query.token });
+
+        if(!resetData){
+            return res.render('404');
+        }
+        return res.render('reset-password', { resetData });
+
+    } catch(error){
+        return res.render('404');
+    }
+}
+
 module.exports = {
     userRegistre,
     mailVerification,
     sendMailVerification,
-    forgotPassword
+    forgotPassword,
+    resetPassword
 }

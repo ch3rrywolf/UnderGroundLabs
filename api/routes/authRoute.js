@@ -10,6 +10,6 @@ router.use(bodyParser.urlencoded({ extended:true }));
 const userController = require('../controllers/userController');
 
 router.get('/mail-verification', userController.mailVerification);
-router.get('/reset-password', userController.reserPassword);
+router.get('/reset-password', userController.resetPassword);
 
 module.exports = router;
