@@ -24,9 +24,9 @@ const Login = () => {
                         placeholder="Password"
                     />
                 </div>
-                    <button type="submit" className="btn btn-primary mt-2">Confirm identity</button>
+                    <button type="submit" className="btn btn-primary mt-2">Login</button>
             </form>
-            <p>
+            <p className='mt-2'>
                 Don't have an account? <Link to="/register">Register</Link>
             </p>
         </div>

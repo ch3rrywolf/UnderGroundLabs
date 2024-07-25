@@ -50,7 +50,7 @@ const userRegistre = async(req, res) => {
 
         const userData = await user.save();
 
-        const msg = '<p> Hii '+name+', Please <a href="http:/127.0.0.1:3000/mail-verification?id='+userData._id+'">Verify</a> your mail.</p>';
+        const msg = '<p> Hii '+name+', Please <a href="http:/127.0.0.1:3500/mail-verification?id='+userData._id+'">Verify</a> your mail.</p>';
 
         mailer.sendMail(email, 'Mail Verification Account UnderGroundLabs', msg);
 
@@ -134,7 +134,7 @@ const sendMailVerification = async(req, res) => {
             });
         }
 
-        const msg = '<p> Hii '+userData.name+', Please <a href="http:/127.0.0.1:3000/mail-verification?id='+userData._id+'">Verify</a> your mail.</p>';
+        const msg = '<p> Hii '+userData.name+', Please <a href="http:/127.0.0.1:3500/mail-verification?id='+userData._id+'">Verify</a> your mail.</p>';
 
         mailer.sendMail(userData.email, 'Mail Verification Account UnderGroundLabs', msg);
 
@@ -175,7 +175,7 @@ const forgotPassword = async(req, res) => {
         }
 
         const randomString = randomstring.generate();
-        const msg = '<p>Hi '+userData.name+', Please click <a href="http://127.0.0.1:3000/reset-password?token='+randomString+'">here</a> to Reset your Password.</p>';
+        const msg = '<p>Hi '+userData.name+', Please click <a href="http://127.0.0.1:3500/reset-password?token='+randomString+'">here</a> to Reset your Password.</p>';
         await PasswordReset.deleteMany({ user_id: userData._id });
         const passwordReset = new PasswordReset({
             user_id: userData._id,

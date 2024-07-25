@@ -1,8 +1,14 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const port = process.env.SERVER_PORT | 3500;
+
+app.use(cors());
+
+
+app.use(express.json());
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
