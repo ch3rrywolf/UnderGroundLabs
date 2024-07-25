@@ -2,7 +2,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
-const port = process.env.SERVER_PORT | 3000;
+const port = process.env.SERVER_PORT | 3500;
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
