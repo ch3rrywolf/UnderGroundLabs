@@ -10,8 +10,27 @@ class AuthService{
 
     }
 
+    configJsonData = {
+        headers:{
+            'Content-Type': 'application/json'
+        }
+
+    }
+
     register(formData){
         return axios.post(this.url+'register', formData, this.configMultipartData);
+    }
+
+    login(formData){
+        return axios.post(this.url+'login', formData, this.configJsonData);
+    }
+
+    loginUser(data){
+        localStorage.setItem("isLoggedIn", true);
+        localStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
+        localStorage.setItem("tokenType", data.tokenType);
+        localStorage.setItem("user", JSON.stringify(data.user));
     }
 }
 

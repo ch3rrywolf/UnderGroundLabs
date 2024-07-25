@@ -1,28 +1,100 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Login.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import AuthService from '../../services/AuthService';
 
 const Login = () => {
+
+    const navigate = useNavigate();
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [errors, setErrors] = useState({});
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        setErrors({});
+
+
+        const formData = {
+            email: email,
+            password: password
+        };
+        // const formData = new FormData();
+        // formData.append('email', email);
+        // formData.append('password', password);
+
+        try{
+            const response = await AuthService.login(formData);
+            const data = response.data;
+            if(data.success){
+
+                AuthService.loginUser(data);
+                setIsLoggedIn(true);
+                
+            } else{
+                alert(data.msg);
+            }
+
+        } catch(error){
+            
+            if(error.response && (error.response.status === 400 || error.response.status === 401)){
+
+                if(error.response.data.errors){
+                    const apiErrors = error.response.data.errors;
+                    const newErrors = {};
+                    apiErrors.forEach((apiError) => {
+                        newErrors[apiError.path] = apiError.msg;
+                    });
+
+                    setErrors(newErrors);
+
+                } else{
+                    alert(error.response.data.msg?error.response.data.msg:error.message);
+                }
+
+            } else{
+                alert(error.message);
+            }
+        }
+
+    };
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            navigate('/dashboard', { replace:true });
+        }
+    }, [isLoggedIn, navigate]);
+
     return (
         <div className="container">
             <h1>Login</h1>
-            <form >
+            <form onSubmit={handleSubmit}>
                 <div className="foem-group">
                     <label htmlFor="exampleInputEmail1">Email</label>
                     <input 
                         type="email"
                         className="form-control"
                         placeholder="email@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
+                    {errors.email && <div className='errorMessage'>{errors.email}</div>}
                 </div>
                 <div className="form-group">
-                    <label htmlFor="exampleInputEmail2">Password</label>
+                    <label htmlFor="exampleInputPassword1">Password</label>
                     <input 
                         type="password"
                         className="form-control"
                         placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
+                    {errors.password && <div className='errorMessage'>{errors.password}</div>}
                 </div>
                     <button type="submit" className="btn btn-primary mt-2">Login</button>
             </form>
