@@ -5,7 +5,11 @@ const cors = require('cors');
 const app = express();
 const port = process.env.SERVER_PORT | 3500;
 
-app.use(cors());
+app.use(express.static('public'))
+
+app.use(cors({
+    origin:'*'
+}));
 
 
 app.use(express.json());
