@@ -23,7 +23,7 @@ const Dashboard = () => {
         setEmail(userData.email)
         setMobile(userData.mobile)
         setImage(null)
-        setImageUrl(process.env.REACT_APP_BE_URL + '' + userData.image)
+        setImageUrl(`${process.env.REACT_APP_BE_URL}${userData.image}`)
 
         if(fileInputRef.current){
             fileInputRef.current.value = '';
