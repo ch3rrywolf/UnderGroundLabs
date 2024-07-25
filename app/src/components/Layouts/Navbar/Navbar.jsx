@@ -1,21 +1,31 @@
 import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import './Navbar';
+import AuthService from "../../../services/AuthService";
 
 const Navbar = () => {
+
+    const navigate = useNavigate();
+
+    const logOutUser = async() => {
+        await AuthService.logoutUser();
+        navigate('/login', { replace:true });
+    }
+
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
-            <a className="navbar-brand" href="#">Navbar</a>
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
 
             <div className="collapse navbar-collapse">
                 <ul className="navbar-nav mr-auto">
                     <li className="nav-item active">
-                        <a className="nav-link" href="#">Home </a>
+                        <Link className="nav-link" to="/dashboard">Dashboard</Link>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#">Link</a>
+                        <Link className="nav-link" onClick={logOutUser}>Logout</Link>
                     </li>
                 </ul>
             </div>
-            
+
         </nav>
     );
 }
