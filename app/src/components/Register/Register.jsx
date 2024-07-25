@@ -13,6 +13,7 @@ const Register = () => {
     const [mobile, setMobile] = useState('');
     const [password, setPassword] = useState('');
     const [image, setImage] = useState(null);
+    const [errors, setErrors ] = useState({});
 
     const handleSubmit = async(event) => {
         event.preventDefault();
@@ -34,7 +35,25 @@ const Register = () => {
             }
 
         } catch(error){
-            alert("There was an error registering! " + error.message);
+            
+            if(error.response && (error.response.status === 400 || error.response.status === 401)){
+
+                if(error.response.data.errors){
+                    const apiErrors = error.response.data.errors;
+                    const newErrors = {};
+                    apiErrors.forEach((apiError) => {
+                        newErrors[apiError.path] = apiError.msg;
+                    });
+
+                    setErrors(newErrors);
+
+                } else{
+                    alert(error.response.data.msg?error.response.data.msg:error.message);
+                }
+
+            } else{
+                alert(error.message);
+            }
         }
 
     };
@@ -52,6 +71,7 @@ const Register = () => {
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Enter Name"
                     />
+                    {errors.name && <div className='errorMessage'>{errors.name}</div>}
                 </div>
                 <div className="form-group">
                     <label >Photo Profile</label>
@@ -60,6 +80,7 @@ const Register = () => {
                         className="form-control"
                         onChange={(e) => setImage(e.target.files[0])}
                     />
+                    {errors.image && <div className='errorMessage'>{errors.image}</div>}
                 </div>
                 <div className="form-group">
                     <label htmlFor="exampleInputEmail1">Email</label>
@@ -70,6 +91,7 @@ const Register = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="email@example.com"
                     />
+                    {errors.email && <div className='errorMessage'>{errors.email}</div>}
                 </div>
                 <div className="form-group">
                     <label htmlFor="exampleInputPassword1">Enter Mobile Number</label>
@@ -80,6 +102,7 @@ const Register = () => {
                         onChange={(e) => setMobile(e.target.value)}
                         placeholder="Enter Mobile Number "
                     />
+                    {errors.mobile && <div className='errorMessage'>{errors.mobile}</div>}
                 </div>
                 <div className="form-group">
                     <label htmlFor="exampleInputPassword1">Password</label>
@@ -90,6 +113,7 @@ const Register = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Password"
                     />
+                    {errors.password && <div className='errorMessage'>{errors.password}</div>}
                 </div>
                     <button type="submit" className="btn btn-primary mt-2">Register</button>
             </form>
