@@ -51,6 +51,21 @@ class AuthService{
     {
         return JSON.parse(localStorage.getItem('user'));
     }
+
+    updateUserData(formData)
+    {
+        const authorizationHeader = {
+            headers:{
+                'Authorization':'Bearer '+localStorage.getItem('accessToken')
+            }
+        }
+        return axios.post(this.url+'update-profile', formData, authorizationHeader);
+    }
+
+    setUserData(userData)
+    {
+        localStorage.setItem("user", JSON.stringify(userData));
+    }
 }
 
 export default new AuthService();

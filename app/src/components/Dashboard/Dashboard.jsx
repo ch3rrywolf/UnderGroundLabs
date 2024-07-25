@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Layout from "../Layouts/Layout/Layout";
 import AuthService from "../../services/AuthService";
 import './Dashboard.css';
@@ -7,15 +7,77 @@ const Dashboard = () => {
 
     const userData = AuthService.getUserData();
 
-    const [name, setName] = useState(userData.name);
-    const [email, setEmail] = useState(userData.email);
-    const [mobile, setMobile] = useState(userData.mobile);
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [mobile, setMobile] = useState('');
     const [image, setImage] = useState(null);
-    const [imageUrl, setImageUrl] = useState(process.env.REACT_APP_BE_URL+''+userData.image);
+    const [imageUrl, setImageUrl] = useState('');
     const [errors, setErrors ] = useState({});
 
+    const fileInputRef = useRef(null);
+
+    const refreshData = () => {
+        const userData = AuthService.getUserData();
+
+        setName(userData.name)
+        setEmail(userData.email)
+        setMobile(userData.mobile)
+        setImage(null)
+        setImageUrl(process.env.REACT_APP_BE_URL + '' + userData.image)
+
+        if(fileInputRef.current){
+            fileInputRef.current.value = '';
+        }
+    }
+
+    useEffect(() => {
+        refreshData();
+    },[]);
 
     const handleSubmit = async (event) => {
+        event.preventDefault();
+        setErrors({});
+
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('mobile', mobile);
+        if(image){
+            formData.append('image', image);
+        }
+        
+        try{
+            const response = await AuthService.updateUserData(formData);
+            const data = response.data;
+            if(data.success){
+                alert(data.msg);
+                AuthService.setUserData(data.user);
+                refreshData();
+            
+            } else{
+                alert(data.msg);
+            }
+
+        } catch(error){
+            
+            if(error.response && (error.response.status === 400 || error.response.status === 401)){
+
+                if(error.response.data.errors){
+                    const apiErrors = error.response.data.errors;
+                    const newErrors = {};
+                    apiErrors.forEach((apiError) => {
+                        newErrors[apiError.path] = apiError.msg;
+                    });
+
+                    setErrors(newErrors);
+
+                } else{
+                    alert(error.response.data.msg?error.response.data.msg:error.message);
+                }
+
+            } else{
+                alert(error.message);
+            }
+        }
 
     };
 
@@ -42,13 +104,15 @@ const Dashboard = () => {
                     <input 
                         type="file"
                         className="form-control"
+                        ref={fileInputRef}
                         onChange={(e) => setImage(e.target.files[0])}
                     />
                     {errors.image && <div className='errorMessage'>{errors.image}</div>}
                 </div>
                 <div className="form-group">
                     <label htmlFor="exampleInputEmail1">Email</label>
-                    <input 
+                    <input
+                        disabled 
                         type="email"
                         className="form-control"
                         value={email}
