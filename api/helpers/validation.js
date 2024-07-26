@@ -7,7 +7,7 @@ exports.registerValidation = [
     }),
     check('mobile', 'Mobile No. should be contains 8 digits').isLength({
         min:8,
-        max:8
+        max:15
     }),
     check('password', 'Password must be greater than 6 characters, and contians at least one uppercase lettre, on lowercase lettre, and one number, and one special character')
     .isStrongPassword({
@@ -49,7 +49,7 @@ exports.updateProfileValidator = [
     check('name', 'Name is required').not().isEmpty(),
     check('mobile', 'Mobile No. should be contains 8 digits').isLength({
         min:8,
-        max:8
+        max:15
     }),
 ];
 
