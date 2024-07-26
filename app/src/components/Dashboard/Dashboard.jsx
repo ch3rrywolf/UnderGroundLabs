@@ -5,7 +5,7 @@ import './Dashboard.css';
 
 const Dashboard = () => {
 
-    const userData = AuthService.getUserData();
+    // const userData = AuthService.getUserData();
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -18,14 +18,14 @@ const Dashboard = () => {
 
     const refreshData = () => {
         const userData = AuthService.getUserData();
-
+    
         setName(userData.name)
         setEmail(userData.email)
         setMobile(userData.mobile)
         setImage(null)
         setImageUrl(`${process.env.REACT_APP_BE_URL}${userData.image}`)
-
-        if(fileInputRef.current){
+    
+        if (fileInputRef.current) {
             fileInputRef.current.value = '';
         }
     }

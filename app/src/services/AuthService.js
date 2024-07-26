@@ -5,7 +5,7 @@ class AuthService{
     url = process.env.REACT_APP_API_URL;
     configMultipartData = {
         headers:{
-            'Contenet-Type': 'multipart/form-data'
+            'Content-Type': 'multipart/form-data'
         }
 
     }
@@ -14,7 +14,49 @@ class AuthService{
         headers:{
             'Content-Type': 'application/json'
         }
+    }
 
+    constructor()
+    {
+        this.axiosInstance = axios.create();
+        this.axiosInstance.interceptors.response.use(
+            response => response,
+            async error => {
+                const originalRequest = error.config;
+                if(error.response.status === 401 && !originalRequest._retry){
+                    originalRequest._retry = true;
+                    try{
+
+                        await this.refreshToken();
+                        const newAccessToken = localStorage.getItem('accessToken');
+                        originalRequest.headers['Authorization'] = 'Bearer '+newAccessToken;
+                        return this.axiosInstance(originalRequest);
+                        //console.log('Refresh Token still not expired!');
+
+                    } catch(e){
+
+                        this.logoutUser();
+                        window.location.href = '/login';
+                        return Promise.reject(e);
+                        //console.log('Refresh Token expired!');
+                    }
+                }
+            }
+        );
+    }
+
+    async refreshToken()
+    {
+        const storedRefreshToken = localStorage.getItem('refreshToken');
+        const authorizationHeader = {
+            headers:{
+                'Authorization':'Bearer '+storedRefreshToken
+            }
+        }
+        const response = await axios.get(this.url+'refresh-token', authorizationHeader);
+        const { accessToken, refreshToken } = response.data;
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
     }
 
     register(formData){
@@ -52,14 +94,13 @@ class AuthService{
         return JSON.parse(localStorage.getItem('user'));
     }
 
-    updateUserData(formData)
-    {
+    updateUserData(formData) {
         const authorizationHeader = {
-            headers:{
-                'Authorization':'Bearer '+localStorage.getItem('accessToken')
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
             }
         }
-        return axios.post(this.url+'update-profile', formData, authorizationHeader);
+        return this.axiosInstance.post(this.url + 'update-profile', formData, authorizationHeader);
     }
 
     setUserData(userData)
@@ -68,4 +109,6 @@ class AuthService{
     }
 }
 
+
+// eslint-disable-next-line import/no-anonymous-default-export
 export default new AuthService();

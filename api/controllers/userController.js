@@ -255,12 +255,12 @@ const resetSuccess = async(req, res) => {
 }
 
 const generateAccessToken = async(user) => {
-    const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn:"2h" });
+    const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn:"15s" });
     return token;
 }
 
 const generateRefreshToken = async(user) => {
-    const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn:"4h" });
+    const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn:"30s" });
     return token;
 }
 

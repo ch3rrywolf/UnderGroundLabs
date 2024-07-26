@@ -6,7 +6,8 @@ const app = express();
 const port = process.env.SERVER_PORT | 3500;
 const path = require('path');
 
-app.use(express.static(path.join(__dirname, 'public/images')));
+app.use('/image', express.static(path.join(__dirname, 'public/images')));
+app.use(express.static('public'));
 
 app.use(cors({
     origin:'*'

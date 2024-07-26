@@ -36,7 +36,7 @@ const verifyToken = async (req, res, next) => {
     } catch (error) {
         return res.status(401).json({
             success: false,
-            msg: 'Invalid token'
+            msg: 'This session has expired, please try again!'
         });
     }
 
