@@ -5,6 +5,7 @@ import Login from './components/Login/Login';
 import Dashboard from './components/Dashboard/Dashboard';
 import AuthService from './services/AuthService';
 import ForgotPassword from './components/ForgotPassword/ForgotPassword';
+import Auth from './components/Auth/Auth';
 
 const UnProtectedRoute = ({ element: Element }) => {
   const isAuthenticated = AuthService.isLoggedIn();
@@ -30,6 +31,8 @@ function App() {
 
         {/* Protected Routes */}
         <Route path='/dashboard' element={ <ProtectedRoute element={ Dashboard } /> } />
+        
+        <Route path='/auth' element={ <Auth /> } />
       </Routes>
     </Router>
     
