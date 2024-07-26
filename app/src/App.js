@@ -4,6 +4,7 @@ import Register from './components/Register/Register';
 import Login from './components/Login/Login';
 import Dashboard from './components/Dashboard/Dashboard';
 import AuthService from './services/AuthService';
+import ForgotPassword from './components/ForgotPassword/ForgotPassword';
 
 const UnProtectedRoute = ({ element: Element }) => {
   const isAuthenticated = AuthService.isLoggedIn();
@@ -25,6 +26,7 @@ function App() {
         <Route path='/' element={ <Navigate to="/login" /> } />
         <Route path='/login' element={ <UnProtectedRoute element={ Login } /> } />
         <Route path='/register' element={ <UnProtectedRoute element={ Register } /> } />
+        <Route path='/forgot-password' element={ <UnProtectedRoute element={ ForgotPassword } /> } />
 
         {/* Protected Routes */}
         <Route path='/dashboard' element={ <ProtectedRoute element={ Dashboard } /> } />

@@ -67,6 +67,10 @@ class AuthService{
         return axios.post(this.url+'login', formData, this.configJsonData);
     }
 
+    frogotPassword(formData){
+        return axios.post(this.url+'forgot-password', formData, this.configJsonData);
+    }
+
     loginUser(data){
         localStorage.setItem("isLoggedIn", true);
         localStorage.setItem("accessToken", data.accessToken);

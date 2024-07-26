@@ -99,7 +99,7 @@ const Login = () => {
                     <button type="submit" className="btn btn-primary mt-2">Login</button>
             </form>
             <p className='mt-2'>
-                Don't have an account? <Link to="/register">Register</Link>
+                Don't have an account? <Link to="/register">Register</Link> | <Link to="/forgot-password">Forgot Password?</Link>
             </p>
         </div>
     );
